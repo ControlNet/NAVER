@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you find this work useful for your research, please consider citing it."
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Cai"
+    given-names: "Zhixi"
+  - family-names: "Ke"
+    given-names: "Fucai"
+  - family-names: "Jahangard"
+    given-names: "Simindokht"
+  - family-names: "Garcia de la Banda"
+    given-names: "Maria"
+  - family-names: "Haffari"
+    given-names: "Reza"
+  - family-names: "Stuckey"
+    given-names: "Peter J."
+  - family-names: "Rezatofighi"
+    given-names: "Hamid"
+  journal: "arXiv preprint arXiv:2502.00372"
+  title: "NAVER: A Neuro-Symbolic Compositional Automaton for Visual Grounding with Explicit Logic Reasoning"
+  year: 2025
