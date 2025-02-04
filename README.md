@@ -33,7 +33,7 @@ If you find this work useful for your research, please consider citing it.
 ```bibtex
 @article{cai2025naver,
   title = {NAVER: A Neuro-Symbolic Compositional Automaton for Visual Grounding with Explicit Logic Reasoning},
-  action = {Zhixi Cai and Fucai Ke and Simindokht Jahangard and Maria Garcia de la Banda and Reza Haffari and Peter J. Stuckey and Hamid Rezatofighi},
+  author = {Cai, Zhixi and Ke, Fucai and Jahangard, Simindokht and Garcia de la Banda, Maria and Haffari, Reza and Stuckey, Peter J. and Rezatofighi, Hamid},
   journal = {arXiv preprint arXiv:2502.00372},
   year = {2025},
 }
