@@ -20,7 +20,7 @@
     </a>
 </div>
 
-**This repo is the official implementation for the paper [NAVER: A Neuro-Symbolic Compositional Automaton for Visual Grounding with Explicit Logic Reasoning](https://arxiv.org/abs/2502.00372).**
+**This repo is the official implementation for the paper [NAVER: A Neuro-Symbolic Compositional Automaton for Visual Grounding with Explicit Logic Reasoning](https://arxiv.org/abs/2502.00372) in ICCV 2025.**
 
 The code will be available soon.
 
