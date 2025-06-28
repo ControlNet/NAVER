@@ -51,7 +51,6 @@ setup(
         "timm",
         "tensorneko==0.3.21",
         "hydra_vl4ai==0.0.5",
-        "scallopy @ git+https://github.com/scallop-lang/scallop.git@f8fac18#egg=scallopy&subdirectory=etc/scallopy",
     ],
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
