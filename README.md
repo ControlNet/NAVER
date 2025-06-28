@@ -73,6 +73,8 @@ pixi shell
 
 Option 2: Building from source (You may need to setup the CUDA and PyTorch manually):
 ```Bash
+conda install conda-forge/label/rust_dev::rust=1.78 -c conda-forge -y
+pip install "git+https://github.com/scallop-lang/scallop.git@f8fac18#egg=scallopy&subdirectory=etc/scallopy"
 pip install -e .
 ```
 

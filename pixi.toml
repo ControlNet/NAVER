@@ -28,7 +28,7 @@ cuda = { version = "==11.8.0", channel = "nvidia/label/cuda-11.8.0" }
 cuda-libraries-dev = { version = "==11.8.0", channel = "nvidia/label/cuda-11.8.0" }
 cuda-version = "==11.8"
 numpy = "<2.0"
-rust = { version = "*", channel = "conda-forge/label/rust_dev" }
+rust = { version = "==1.78.0.dev20240310", channel = "conda-forge/label/rust_dev" }
 python-dotenv = "*"
 word2number = ">=1.1, <2"
 rich = ">=14.0.0,<15"
