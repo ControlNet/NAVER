@@ -22,7 +22,7 @@ jobs:
           
       - name: Get Local Version
         id: get-local-version
-        run: echo "version=$(python -c 'import naver._version; print(naver._version.__version__)')" >> $GITHUB_OUTPUT
+        run: echo "version=$(grep -oP '__version__ = "\K[^"]+' naver/_version.py)" >> $GITHUB_OUTPUT
         
       - name: Get Remote Version
         id: get-remote-version
@@ -60,7 +60,7 @@ jobs:
           
       - name: Get the version
         run: |
-          VER=$(python -c "import naver._version; print(naver._version.__version__)")
+          VER=$(grep -oP '__version__ = "\K[^"]+' naver/_version.py)
           echo "VERSION=$VER" >> $GITHUB_ENV
           
       - name: Create GitHub Release
