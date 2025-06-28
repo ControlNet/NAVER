@@ -1,0 +1,61 @@
+[project]
+authors = ["ControlNet <smczx@hotmail.com>"]
+channels = ["pytorch", "nvidia/label/cuda-11.8.0", "anaconda", "conda-forge/label/rust_dev", "conda-forge"]
+description = "NAVER"
+name = "naver"
+platforms = ["linux-64"]
+channel-priority = "disabled"
+
+[tasks]
+download_model = "python -m hydra_vl4ai.download_model --base_config config/refcoco.yaml --model_config config/model_config.yaml --extra_packages naver.tool"
+
+[build-dependencies]
+setuptools = "*"
+maturin = "*"
+cmake = "*"
+ninja = "*"
+
+[pypi-options]
+no-build-isolation = ["detectron2", "scallopy", "naver"]
+
+[dependencies]
+python = { version = "3.12.*", channel = "anaconda" }
+pytorch = { version = "==2.5.1", channel = "pytorch" }
+torchvision = { version = "==0.20.1", channel = "pytorch" }
+torchaudio = { version = "==2.5.1", channel = "pytorch" }
+pytorch-cuda = { version = "~=11.8.0", channel = "pytorch" }
+cuda = { version = "==11.8.0", channel = "nvidia/label/cuda-11.8.0" }
+cuda-libraries-dev = { version = "==11.8.0", channel = "nvidia/label/cuda-11.8.0" }
+cuda-version = "==11.8"
+numpy = "<2.0"
+rust = { version = "*", channel = "conda-forge/label/rust_dev" }
+python-dotenv = "*"
+word2number = ">=1.1, <2"
+rich = ">=14.0.0,<15"
+openai = ">=1.92.2,<2"
+scipy = ">=1.15.3,<2"
+accelerate = ">=1.8.0,<2"
+sentencepiece = ">=0.2.0,<0.3"
+orjson = ">=3.10.14,<4"
+
+[pypi-dependencies]
+transformers = "~=4.43.0"
+datasets = ">=2.19,<4"
+tokenizers = "~=0.19.0"
+bbox-visualizer = ">=0.2.2, <0.3"
+pyyaml = ">=6.0.2, <7"
+ollama = ">=0.5.1, <0.6"
+problog = ">=2.2.7, <3"
+tensorneko = "==0.3.21"
+timm = ">=1.0.16, <1.1"
+hydra_vl4ai = "==0.0.5"
+scallopy = { git = "https://github.com/scallop-lang/scallop.git", subdirectory = "etc/scallopy", rev = "f8fac18" }
+segment_anything = { path = "module_repos/Grounded-Segment-Anything/segment_anything" }
+flash_attn = { url = "https://github.com/ControlNet/flash-attention-prebuild-wheels/releases/download/v0.0.7/flash_attn-2.7.4.post1+cu118torch2.5-cp312-cp312-linux_x86_64.whl" }
+detectron2 = { path = "module_repos/detectron2" }
+
+# --- required by xvlm ---
+gdown = ">=5.2.0, <6"
+
+# --- current project ---
+naver = { path = ".", editable = true }

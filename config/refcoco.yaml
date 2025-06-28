@@ -1,0 +1,27 @@
+dataset: refcoco
+task: grounding
+llm_code_model: "openai::gpt-4o-mini"
+llm_model: "openai::gpt-4o-mini"
+
+executor_port: 31888
+llm_max_retry: 3
+planner_max_retry: 5
+reasoner_max_retry: 5
+max_iterations: 7
+llm_max_concurrency: 1000
+max_concurrent_tasks: 20
+ratio_box_area_to_image_area: 0.0
+crop_larger_margin: True
+
+vlm_model: "internvl2"
+vlm_caption_model: "internvl2"
+
+grounding_model: "florence2"
+florence2_threshold: 0.5
+
+verify_property_model: xvlm
+verify_property_thresh_xvlm: 0.5
+
+depth_model: depth_anything_v2
+
+fallback_model: florence2
