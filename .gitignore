@@ -393,3 +393,52 @@ pixi.lock
 *.jsonl
 *.scl
 *.pl
+
+# Build artifacts
+gui/build/
+gui/.svelte-kit/
+gui/node_modules/
+gui/dist/
+
+# Logs
+*.log
+logs/
+
+# Environment variables
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Coverage
+.coverage
+htmlcov/
+
+# Distribution
+*.egg-info/
+dist/
+build/
