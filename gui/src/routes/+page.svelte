@@ -197,9 +197,8 @@
 
 	.bottom-row {
 		display: grid;
-		grid-template-columns: 2fr 1fr;
+		grid-template-columns: 1fr 2fr;
 		gap: 1rem;
-		height: 400px;
 	}
 
 	.fsa-container {
@@ -215,4 +214,11 @@
 		border: 1px solid var(--border-color);
 		overflow: hidden;
 	}
+
+    :global(.memory-container img) {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: contain;
+    }
 </style>
