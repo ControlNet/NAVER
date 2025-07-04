@@ -418,7 +418,7 @@
 	}
 
 	.state-label {
-		font-size: 36px;
+		font-size: 11px;
 		font-weight: 500;
 		user-select: none;
 		pointer-events: none;

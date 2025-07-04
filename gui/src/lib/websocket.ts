@@ -19,6 +19,7 @@ import type {
 	StateInfo
 } from './types';
 import {handleContext} from "$lib/contextStore";
+import { PUBLIC_BASE_URL } from '$env/static/public';
 
 interface AnalysisResponse {
 	status: string;
@@ -62,7 +63,7 @@ class WebSocketService {
 			this.currentSessionId = sessionIdToUse;
 			
 			const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-			const wsUrl = `${protocol}//${window.location.host}/ws/${this.currentSessionId}`;
+			const wsUrl = `${PUBLIC_BASE_URL}/ws/${this.currentSessionId}`;
 			
 			console.log(`Connecting to WebSocket: ${wsUrl}`);
 			
@@ -372,7 +373,7 @@ class WebSocketService {
 
 		try {
 			console.log('Starting analysis via /api/start');
-			const response = await fetch('/api/start', {
+			const response = await fetch(`${PUBLIC_BASE_URL}/api/start`, {
 				method: 'POST',
 				body: formData
 			});
