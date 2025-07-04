@@ -442,3 +442,5 @@ htmlcov/
 *.egg-info/
 dist/
 build/
+
+!gui/src/lib
