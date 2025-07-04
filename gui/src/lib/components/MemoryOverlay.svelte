@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { entities, currentImage } from '$lib/stores.js';
 	import { onDestroy } from 'svelte';
+    import ImageWithBoxes from "$lib/components/ImageWithBoxes.svelte";
 	
 	let imageUrl: string | null = null;
 	
@@ -32,7 +33,7 @@
 	</div>
 	<div class="panel-content">
 		{#if imageUrl}
-			<img src={imageUrl} alt="Current" class="image-display" />
+            <ImageWithBoxes src={imageUrl} alt="Current" className="image-display" />
 		{:else}
 			<div class="placeholder">No image loaded</div>
 		{/if}

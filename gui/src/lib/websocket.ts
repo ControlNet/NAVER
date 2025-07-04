@@ -18,6 +18,7 @@ import type {
 	ExecutionMessage,
 	StateInfo
 } from './types';
+import {handleContext} from "$lib/contextStore";
 
 interface AnalysisResponse {
 	status: string;
@@ -166,6 +167,11 @@ class WebSocketService {
 				case 'agent_message':
 					await this.handleAgentMessage(message.data);
 					break;
+
+                case 'context':
+                    // message.body = { entities, relations, attributes }
+                    handleContext(message);
+                    break;
 
 				default:
 					console.log('Unknown message type:', message.type, message);

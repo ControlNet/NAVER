@@ -65,7 +65,7 @@ export interface ExecutionMessage {
 }
 
 export interface WebSocketMessage {
-	type: 'ping' | 'pong' | 'state_update' | 'execution_complete' | 'execution_error' | 'agent_message' | 'execution_message' | 'state_info';
+	type: 'ping' | 'pong' | 'state_update' | 'execution_complete' | 'execution_error' | 'agent_message' | 'execution_message' | 'state_info' | 'context';
 	data?: any;
 	body?: ExecutionMessage | StateInfo; // Updated to include StateInfo
 	timestamp?: number;
