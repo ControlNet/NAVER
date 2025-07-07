@@ -15,9 +15,7 @@
 		'_LogicGenerationState': { x: 600, y: 150, color: '#8b5cf6', label: 'Logic Generation' },
 		'_LogicReasoningState': { x: 600, y: 300, color: '#f59e0b', label: 'Logic Reasoning' },
 		'_AnsweringState': { x: 400, y: 400, color: '#10b981', label: 'Answering' },
-		'Output': { x: 400, y: 500, color: '#06b6d4', label: 'Output' },
-		'COMPLETE': { x: 400, y: 600, color: '#22c55e', label: 'Complete' },
-		'ERROR': { x: 100, y: 400, color: '#ef4444', label: 'Error' }
+		'Output': { x: 400, y: 500, color: '#06b6d4', label: 'Output' }
 	};
 
 	// Map backend state names to display names
@@ -38,7 +36,7 @@
 		
 		// From Logic Generation
 		{ from: '_LogicGenerationState', to: '_LogicReasoningState', label: 'success', color: '#8b5cf6' },
-		{ from: '_LogicGenerationState', to: 'ERROR', label: 'fail', color: '#ef4444' },
+		{ from: '_LogicGenerationState', to: '_LogicGenerationState', label: 'retry', color: '#ef4444', curved: true },
 		
 		// From Logic Reasoning
 		{ from: '_LogicReasoningState', to: '_AnsweringState', label: 'success', color: '#f59e0b' },
@@ -47,10 +45,7 @@
 		// From Answering
 		{ from: '_AnsweringState', to: 'Output', label: 'valid', color: '#10b981' },
 		{ from: '_AnsweringState', to: '_LogicReasoningState', label: 'invalid', color: '#ef4444', curved: true },
-		{ from: '_AnsweringState', to: 'Output', label: 'fallback', color: '#f59e0b' },
-		
-		// From Output (final state)
-		{ from: 'Output', to: 'COMPLETE', label: 'done', color: '#06b6d4' }
+		{ from: '_AnsweringState', to: 'Output', label: 'fallback', color: '#f59e0b' }
 	];
 
 	function isStateActive(stateName: string): boolean {
@@ -148,10 +143,6 @@
 			}
 		});
 		
-		// Always include completion states
-		states['COMPLETE'] = statePositions['COMPLETE'];
-		states['ERROR'] = statePositions['ERROR'];
-		
 		return states;
 	})();
 
@@ -186,7 +177,7 @@
 
 <div class="fsa-visualization">
 	<div class="panel-header">
-		🔄 Execution Flow (FSA) - Iteration {$executionState.iteration}
+		🔄 Execution Flow (FSA) {$executionState.iteration}
 	</div>
 	<div class="panel-content">
 		<div class="fsa-info">

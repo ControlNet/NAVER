@@ -411,7 +411,7 @@ async def websocket_endpoint(websocket: WebSocket, session_id: str):
                     "type": "state_info",
                     "body": {
                         "current_state": "Output",
-                        "history": [*state_info.history, "Output"]
+                        "history": [*state_info.history, state_info.current_state]
                     }
                 })
                 # send the logic context

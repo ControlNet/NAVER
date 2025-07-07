@@ -37,7 +37,6 @@
 		{:else}
 			<div class="placeholder">No image loaded</div>
 		{/if}
-		<p>Entities: {$entities.length}</p>
 	</div>
 </div>
 
