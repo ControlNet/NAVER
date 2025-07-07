@@ -11,10 +11,10 @@
 
 	// NAVER FSA states and their positions (for graph layout)
 	const statePositions: Record<string, StatePosition> = {
-		'Perception': { x: 200, y: 150, color: '#3b82f6', label: 'Perception' },
-		'LogicGeneration': { x: 600, y: 150, color: '#8b5cf6', label: 'Logic Generation' },
-		'LogicReasoning': { x: 600, y: 300, color: '#f59e0b', label: 'Logic Reasoning' },
-		'Answering': { x: 400, y: 400, color: '#10b981', label: 'Answering' },
+		'_PerceptionState': { x: 200, y: 150, color: '#3b82f6', label: 'Perception' },
+		'_LogicGenerationState': { x: 600, y: 150, color: '#8b5cf6', label: 'Logic Generation' },
+		'_LogicReasoningState': { x: 600, y: 300, color: '#f59e0b', label: 'Logic Reasoning' },
+		'_AnsweringState': { x: 400, y: 400, color: '#10b981', label: 'Answering' },
 		'Output': { x: 400, y: 500, color: '#06b6d4', label: 'Output' },
 		'COMPLETE': { x: 400, y: 600, color: '#22c55e', label: 'Complete' },
 		'ERROR': { x: 100, y: 400, color: '#ef4444', label: 'Error' }
@@ -22,32 +22,32 @@
 
 	// Map backend state names to display names
 	const stateNameMap: Record<string, string> = {
-		'Perception': 'Perception',
-		'LogicGeneration': 'Logic Generation',
-		'LogicReasoning': 'Logic Reasoning',
-		'Answering': 'Answering',
+		'_PerceptionState': 'Perception',
+		'_LogicGenerationState': 'Logic Generation',
+		'_LogicReasoningState': 'Logic Reasoning',
+		'_AnsweringState': 'Answering',
 		'Output': 'Output'
 	};
 
 	// Define possible transitions based on NAVER automaton logic
 	const possibleTransitions = [
 		// From Perception
-		{ from: 'Perception', to: 'LogicGeneration', label: 'multi_objects', color: '#3b82f6' },
-		{ from: 'Perception', to: 'Answering', label: 'single/no_object', color: '#3b82f6' },
-		{ from: 'Perception', to: 'Perception', label: 'retry', color: '#ef4444', curved: true },
+		{ from: '_PerceptionState', to: '_LogicGenerationState', label: 'multi_objects', color: '#3b82f6' },
+		{ from: '_PerceptionState', to: '_AnsweringState', label: 'single/no_object', color: '#3b82f6' },
+		{ from: '_PerceptionState', to: '_PerceptionState', label: 'retry', color: '#ef4444', curved: true },
 		
 		// From Logic Generation
-		{ from: 'LogicGeneration', to: 'LogicReasoning', label: 'success', color: '#8b5cf6' },
-		{ from: 'LogicGeneration', to: 'ERROR', label: 'fail', color: '#ef4444' },
+		{ from: '_LogicGenerationState', to: '_LogicReasoningState', label: 'success', color: '#8b5cf6' },
+		{ from: '_LogicGenerationState', to: 'ERROR', label: 'fail', color: '#ef4444' },
 		
 		// From Logic Reasoning
-		{ from: 'LogicReasoning', to: 'Answering', label: 'success', color: '#f59e0b' },
-		{ from: 'LogicReasoning', to: 'LogicGeneration', label: 'self_correct', color: '#ef4444', curved: true },
+		{ from: '_LogicReasoningState', to: '_AnsweringState', label: 'success', color: '#f59e0b' },
+		{ from: '_LogicReasoningState', to: '_LogicGenerationState', label: 'self_correct', color: '#ef4444', curved: true },
 		
 		// From Answering
-		{ from: 'Answering', to: 'Output', label: 'valid', color: '#10b981' },
-		{ from: 'Answering', to: 'LogicReasoning', label: 'invalid', color: '#ef4444', curved: true },
-		{ from: 'Answering', to: 'Output', label: 'fallback', color: '#f59e0b' },
+		{ from: '_AnsweringState', to: 'Output', label: 'valid', color: '#10b981' },
+		{ from: '_AnsweringState', to: '_LogicReasoningState', label: 'invalid', color: '#ef4444', curved: true },
+		{ from: '_AnsweringState', to: 'Output', label: 'fallback', color: '#f59e0b' },
 		
 		// From Output (final state)
 		{ from: 'Output', to: 'COMPLETE', label: 'done', color: '#06b6d4' }
@@ -175,6 +175,13 @@
 		inHistory: isStateInHistory(stateName),
 		displayName: stateNameMap[stateName] || state.label
 	}));
+
+    let fullHistory: string[] = [];
+
+    $: if (stateInfo) {
+        fullHistory = $stateInfo.history ?? []
+    }
+
 </script>
 
 <div class="fsa-visualization">
@@ -184,23 +191,26 @@
 	<div class="panel-content">
 		<div class="fsa-info">
 			<div class="state-info">
-				<span class="current-state" style="color: {currentStateColor}">
-					● {currentStateLabel}
-				</span>
+                {#if $executionState.error}
+                    <span class="current-state error-state">
+                        ⚠️ {$executionState.error}
+                    </span>
+                {:else}
+                    <span class="current-state" style="color: {currentStateColor}">
+                        ● {currentStateLabel}
+                    </span>
+                {/if}
 				<span class="progress">{$executionState.progress}%</span>
 			</div>
-			{#if $executionState.error}
-				<div class="error">⚠️ {$executionState.error}</div>
-			{/if}
 			
 			<!-- State History Display -->
 			{#if $stateInfo.history.length > 0}
 				<div class="state-history">
 					<strong>State History:</strong>
-					{#each $stateInfo.history as historyState, index (index)}
+					{#each fullHistory as historyState, index (index)}
 						<span class="history-state">
 							{stateNameMap[historyState] || historyState}
-							{#if index < $stateInfo.history.length - 1}→{/if}
+							{#if index < fullHistory.length - 1}→{/if}
 						</span>
 					{/each}
 					{#if $stateInfo.current_state}
@@ -210,7 +220,7 @@
 			{/if}
 		</div>
 		
-		<svg class="fsa-graph" viewBox="0 0 800 650" xmlns="http://www.w3.org/2000/svg">
+		<svg class="fsa-graph" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
 			<!-- Define arrow marker -->
 			<defs>
 				<marker id="arrowhead" markerWidth="10" markerHeight="7" 
@@ -257,7 +267,7 @@
 						cx={state.x}
 						cy={state.y}
 						r="35"
-						fill={isActive ? state.color : (inHistory ? state.color + '40' : state.color + '20')}
+						fill={isActive ? state.color : (inHistory ? state.color + '80' : state.color + '20')}
 						stroke={isActive ? '#000' : state.color}
 						stroke-width={isActive ? '3' : '2'}
 					/>
@@ -268,7 +278,7 @@
 						y={state.y + 5}
 						text-anchor="middle"
 						class="state-label"
-						fill={isActive ? '#000' : '#fff'}
+						fill="#000"
 						font-weight={isActive ? 'bold' : 'normal'}
 					>
 						{displayName}
@@ -344,6 +354,11 @@
 		font-size: 1rem;
 	}
 
+    .error-state {
+        color: var(--accent-red);
+    }
+
+
 	.progress {
 		font-size: 0.875rem;
 		color: var(--text-secondary);
@@ -386,6 +401,7 @@
 		width: 100%;
 		height: 100%;
 		min-height: 200px;
+        display: block;
 	}
 
 	.state {
