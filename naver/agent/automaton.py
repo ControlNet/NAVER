@@ -26,7 +26,7 @@ class Naver:
         self.logic_generator = LogicGenerator(self.query, self.state_memory_bank)
         self.logic_reasoner = LogicReasoner(self.state_memory_bank)
         self.answerer = Answerer(self.image, self.query, self.state_memory_bank)
-        self.current_iter = 0
+        self.current_iter = 0  # the count for the self-corrections
 
     async def step(self) -> tuple[Entity | None, str]:
         # run one step in the Deterministic Finite-State Automaton (DFA)

@@ -16,8 +16,6 @@ class Florence2(BaseModel):
     model_name = "microsoft/Florence-2-large-ft"
 
     def __init__(self, gpu_number=0):
-        assert gpu_number == 0, "GroundingDino only works in cuda:0, see https://github.com/IDEA-Research/GroundingDINO/issues/103"
-
         super().__init__(gpu_number)
 
         self.device = self.dev
