@@ -45,7 +45,7 @@
 ## TODOs
 
 We're working on the following TODOs:
-- [ ] GUI demo.
+- [x] GUI demo.
 - [ ] Support more LLMs.
 - [ ] Video demo & slides presentation.
 
@@ -100,6 +100,18 @@ python -m hydra_vl4ai.download_model --base_config config/refcoco.yaml --model_c
 ## Inference
 
 You may need 28GB vRAM to run NAVER. Consider editing the file in `./config/model_config.yaml` to load the models in multiple GPUs.
+
+### Inference with GUI
+
+You need `nodejs` and `npm` to run the GUI demo. It will automatically compile and build the frontend.
+
+The GUI will be available at `http://0.0.0.0:8000`.
+
+```Bash
+python demo_gui.py \
+  --base_config <YOUR-CONFIG-DIR> \
+  --model_config <MODEL-CONFIG-PATH>
+```
 
 ### Inference with given one image and query
 ```Bash

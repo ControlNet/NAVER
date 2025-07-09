@@ -18,6 +18,19 @@ export interface Relation {
 	attributes?: Record<string, any>;
 }
 
+// Context data structure including final result
+export interface ContextData {
+	entities: Entity[];
+	relations: Relation[];
+	attributes: any[];
+	final_result?: {
+		id: string;
+		category: string;
+		bbox: number[];
+		bbox_confidence: number;
+	};
+}
+
 export interface ExecutionState {
 	isRunning: boolean;
 	currentState: string;
@@ -67,7 +80,7 @@ export interface ExecutionMessage {
 export interface WebSocketMessage {
 	type: 'ping' | 'pong' | 'state_update' | 'execution_complete' | 'execution_error' | 'agent_message' | 'execution_message' | 'state_info' | 'context';
 	data?: any;
-	body?: ExecutionMessage | StateInfo; // Updated to include StateInfo
+	body?: ExecutionMessage | StateInfo | ContextData; // Updated to include ContextData
 	timestamp?: number;
 }
 

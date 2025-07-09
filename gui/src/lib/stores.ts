@@ -1,5 +1,6 @@
 import { writable, type Writable } from 'svelte/store';
 import { tick } from 'svelte';
+import { finalResultEntityId, finalResultIoU } from './contextStore';
 import type { 
 	Entity, 
 	Relation, 
@@ -74,6 +75,10 @@ export const storeActions = {
 		context.set(null);
 		executionHistory.set([]);
 		chatMessages.set([]);
+		
+		finalResultEntityId.set(null);
+		finalResultIoU.set(null);
+		
 		await tick();
 	},
 

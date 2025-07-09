@@ -52,12 +52,6 @@
 		padding: 1rem;
 	}
 
-	.image-display {
-		max-width: 100%;
-		max-height: 200px;
-		object-fit: contain;
-	}
-
 	.placeholder {
 		color: var(--text-secondary);
 		text-align: center;

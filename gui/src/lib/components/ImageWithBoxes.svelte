@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { entities, relations, attributes } from '../contextStore';
+    import { entities, relations, attributes, finalResultEntityId } from '../contextStore';
 
     export let src: string;             // Image URL
     export let alt: string;
@@ -57,11 +57,11 @@
         return { x, y };
     }
 
-    // Get relations for a specific entity
+    // Get relations for a specific entity (only relations FROM this entity)
     function getEntityRelations(entityId: string) {
         console.log('getEntityRelations', entityId);
         return $relations.filter(rel => 
-            rel.object_entity_id === entityId || rel.subject_entity_id === entityId
+            rel.subject_entity_id === entityId
         );
     }
 
@@ -146,9 +146,10 @@
     function handleTooltipMouseDown(event: MouseEvent) {
         if (tooltip?.isFixed) {
             isDraggingTooltip = true;
+            const rect = containerEl.getBoundingClientRect();
             dragOffset = {
-                x: event.clientX - tooltip.x,
-                y: event.clientY - tooltip.y
+                x: (event.clientX - rect.left) - tooltip.x,  // ✅ Both in container coordinates
+                y: (event.clientY - rect.top) - tooltip.y
             };
             event.preventDefault();
             event.stopPropagation(); // Prevent event bubbling that might clear the tooltip
@@ -229,6 +230,23 @@
         border-width: 3px;
     }
     
+    .bbox.final-result {
+        border: 2px solid #3b82f6;          /* blue-500 */
+        background: rgba(59,130,246,.15);   /* blue transparent filling */
+    }
+    
+    .bbox.final-result:hover {
+        border-color: #2563eb;              /* blue-600 */
+        background: rgba(59,130,246,.25);
+        transform: scale(1.02);
+    }
+    
+    .bbox.final-result.selected {
+        border-color: #1d4ed8;              /* blue-700 */
+        background: rgba(59,130,246,.2);
+        border-width: 3px;
+    }
+    
     .tag {
         position: absolute;
         top: -1.2rem; 
@@ -245,30 +263,79 @@
     .selected .tag {
         background: #dc2626;
     }
+    
+    .final-result .tag {
+        background: #3b82f6;                /* blue-500 */
+    }
+    
+    .final-result.selected .tag {
+        background: #1d4ed8;                /* blue-700 */
+    }
 
     .relation-line {
         position: absolute;
-        background: #3b82f6;
         transform-origin: left center;
         pointer-events: auto;
         cursor: pointer;
         opacity: 0.7;
         transition: opacity 0.2s ease;
+        background: repeating-linear-gradient(
+            90deg,
+            #3b82f6 0%,
+            #3b82f6 50%,
+            #60a5fa 50%,
+            #60a5fa 100%
+        );
+        background-size: 20px 100%;
+        animation: flow-animation 2s linear infinite;
     }
 
     .relation-line:hover {
         opacity: 1;
-        background: #1d4ed8;
+        background: repeating-linear-gradient(
+            90deg,
+            #1d4ed8 0%,
+            #1d4ed8 50%,
+            #3b82f6 50%,
+            #3b82f6 100%
+        );
+        background-size: 20px 100%;
+        animation: flow-animation 1.5s linear infinite;
     }
 
     .relation-line.persistent {
-        background: #dc2626;
         opacity: 0.8;
+        background: repeating-linear-gradient(
+            90deg,
+            #dc2626 0%,
+            #dc2626 50%,
+            #f87171 50%,
+            #f87171 100%
+        );
+        background-size: 20px 100%;
+        animation: flow-animation 2s linear infinite;
     }
 
     .relation-line.persistent:hover {
-        background: #b91c1c;
         opacity: 1;
+        background: repeating-linear-gradient(
+            90deg,
+            #b91c1c 0%,
+            #b91c1c 50%,
+            #dc2626 50%,
+            #dc2626 100%
+        );
+        background-size: 20px 100%;
+        animation: flow-animation 1.5s linear infinite;
+    }
+
+    @keyframes flow-animation {
+        0% {
+            background-position: 0 0;
+        }
+        100% {
+            background-position: 20px 0;
+        }
     }
 
     .tooltip {
@@ -325,8 +392,10 @@
     <!-- Entity bounding boxes -->
     {#each $entities as entity}
         {#if originalWidth && originalHeight}
+            {@const isFinalResult = $finalResultEntityId === entity.id}
+            {@const isSelected = selectedEntityId === entity.id}
             <div
-                class="bbox {selectedEntityId === entity.id ? 'selected' : ''}"
+                class="bbox {isSelected ? 'selected' : ''} {isFinalResult ? 'final-result' : ''}"
                 style="
                     left:{scale(entity.bbox[0], originalWidth, displayWidth)}px;
                     top:{scale(entity.bbox[1], originalHeight, displayHeight)}px;
@@ -335,14 +404,14 @@
                 "
                 tabindex="0"
                 role="button"
-                aria-label="Entity: {entity.category}"
+                aria-label="Entity: {entity.category} {isFinalResult ? '(Final Answer)' : ''}"
                 on:mouseenter={(e) => handleEntityHover(entity, e)}
                 on:mousemove={(e) => handleEntityMouseMove(entity, e)}
                 on:mouseleave={handleEntityHoverLeave}
                 on:click={() => handleEntityClick(entity)}
                 on:keydown={(e) => e.key === 'Enter' || e.key === ' ' ? handleEntityClick(entity) : null}
             >
-                <span class="tag">{entity.category}</span>
+                <span class="tag">{entity.category}{isFinalResult ? ' ✓' : ''}</span>
             </div>
         {/if}
     {/each}
@@ -380,6 +449,7 @@
     <!-- Entity tooltip -->
     {#if tooltip}
         {@const entityAttributes = getEntityAttributes(tooltip.entity.id)}
+        {@const isFinalResult = $finalResultEntityId === tooltip.entity.id}
         <div 
             class="tooltip {tooltip.isFixed ? 'fixed' : ''} {isDraggingTooltip ? 'dragging' : ''}" 
             style="left: {tooltip.x + 10}px; top: {tooltip.y - 10}px;"
@@ -390,7 +460,12 @@
             role="dialog"
             aria-label="Entity information tooltip"
         >
-            <div class="tooltip-title">{tooltip.entity.category}</div>
+            <div class="tooltip-title">
+                {tooltip.entity.category}
+                {#if isFinalResult}
+                    <span style="color: #3b82f6; margin-left: 4px;">✓ Final Answer</span>
+                {/if}
+            </div>
             <div class="tooltip-content">
                 <div><strong>ID:</strong> {tooltip.entity.id}</div>
                 <div><strong>Confidence:</strong> {(tooltip.entity.bbox_confidence * 100).toFixed(1)}%</div>

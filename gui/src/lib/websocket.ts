@@ -3,12 +3,8 @@ import {
     isConnected, 
     sessionId,
     storeActions,
-    executionState,
-    entities,
-    relations,
     context,
-    executionHistory,
-    stateInfo
+    executionHistory
 } from './stores';
 import type { 
     WebSocketMessage, 

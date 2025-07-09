@@ -7,8 +7,11 @@ import tempfile
 import time
 from pathlib import Path
 import argparse
+import shutil
 from typing import Optional
 import uuid
+import subprocess
+import sys
 
 import uvicorn
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, UploadFile, File, Form, HTTPException
@@ -35,6 +38,7 @@ from hydra_vl4ai.util.console import logger
 from naver import Naver
 from naver.agent.states import States, State
 from naver.context import Context
+from naver.context.entity import Entity
 
 
 SystemState = Literal["IDLE", "BUSY", "STOPPED"]
@@ -109,6 +113,69 @@ class ConnectionManager:
         await self.send_message(session_id, message)
     
 
+# Serve the built SvelteKit frontend
+frontend_build_path = Path("gui/build")
+if not frontend_build_path.exists():
+    logger.info("Frontend not built. Building frontend automatically...")
+    
+    gui_path = Path("gui")
+    if not gui_path.exists():
+        logger.error("Error: 'gui' directory not found. Please ensure the frontend source exists.")
+        exit(1)
+
+    env_path = gui_path / ".env"
+    if not env_path.exists():
+        shutil.copy(gui_path / ".env.example", env_path)
+
+    try:
+        # Check if package.json exists
+        package_json = gui_path / "package.json"
+        if not package_json.exists():
+            logger.error("Error: package.json not found in gui directory.")
+            exit(1)
+        
+        # Install dependencies if node_modules doesn't exist
+        node_modules = gui_path / "node_modules"
+        if not node_modules.exists():
+            logger.info("Installing frontend dependencies...")
+            result = subprocess.run(
+                ["npm", "install"],
+                cwd=str(gui_path),
+                capture_output=True,
+                text=True
+            )
+            if result.returncode != 0:
+                logger.error(f"Error installing dependencies: {result.stderr}")
+                exit(1)
+            logger.info("Dependencies installed successfully.")
+        
+        # Build the frontend
+        logger.info("Building frontend...")
+        result = subprocess.run(
+            ["npm", "run", "build"],
+            cwd=str(gui_path),
+            capture_output=True,
+            text=True
+        )
+        
+        if result.returncode != 0:
+            logger.error(f"Error building frontend: {result.stderr}")
+            exit(1)
+        
+        logger.info("Frontend built successfully!")
+        
+        # Verify build directory was created
+        if not frontend_build_path.exists():
+            logger.error("Error: Build completed but build directory was not created.")
+            exit(1)
+            
+    except FileNotFoundError:
+        logger.error("Error: npm not found. Please install Node.js and npm.")
+        exit(1)
+    except Exception as e:
+        logger.error(f"Error during frontend build: {e}")
+        exit(1)
+
 # Initialize Toolbox for NAVER
 Toolbox.init(["naver.tool"])
 
@@ -130,12 +197,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Serve the built SvelteKit frontend
-frontend_build_path = Path("gui/build")
-if not frontend_build_path.exists():
-    print("Frontend not built. Run 'cd gui && npm run build' first.")
-    exit(1)
 
 # used to visualize the agent messages
 class ExecutionMessage(BaseModel):
@@ -343,7 +404,7 @@ def update_state_info(naver: Naver, session_id: str) -> StateInfo:
     return state_info
 
 
-def context_to_dict(context: Context) -> dict:
+def context_to_dict(context: Context, final_result: Entity | None = None) -> dict:
     entities = [{
         "id": v.id,
         "category": v.category,
@@ -363,7 +424,18 @@ def context_to_dict(context: Context) -> dict:
         "prob": v.prob
     } for v in context.attributes]
 
-    return {"entities": entities, "relations": relations, "attributes": attributes}
+    result = {"entities": entities, "relations": relations, "attributes": attributes}
+    
+    # Add final result information if available
+    if final_result is not None:
+        result["final_result"] = {
+            "id": final_result.id,
+            "category": final_result.category,
+            "bbox": final_result.bbox,
+            "bbox_confidence": final_result.bbox_confidence
+        }
+    
+    return result
 
 # WebSocket endpoint (used for main inference pipeline)
 @app.websocket("/ws/{session_id}")
@@ -418,7 +490,7 @@ async def websocket_endpoint(websocket: WebSocket, session_id: str):
                 assert naver.state_memory_bank.context is not None, f"The context is not found for session {session_id}"
                 await manager.send_message(session_id, {
                     "type": "context",
-                    "body": context_to_dict(naver.state_memory_bank.context)
+                    "body": context_to_dict(naver.state_memory_bank.context, final_result=result)
                 })
                 break
 
@@ -524,6 +596,7 @@ async def serve_spa(path: str):
 if __name__ == "__main__":
 
     logger.info("Starting the NAVER GUI server...")
+    logger.info("Visit http://localhost:8000 to access the GUI")
     uvicorn.run(
         "demo_gui:app",
         host="0.0.0.0",
