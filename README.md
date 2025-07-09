@@ -113,6 +113,8 @@ python demo_gui.py \
   --model_config <MODEL-CONFIG-PATH>
 ```
 
+![gui_preview](assets/gui_preview.webp)
+
 ### Inference with given one image and query
 ```Bash
 python demo_cli.py \
