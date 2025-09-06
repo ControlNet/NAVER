@@ -49,6 +49,16 @@ We're working on the following TODOs:
 - [ ] Support more LLMs.
 - [ ] Video demo & slides presentation.
 
+## Docker (GUI Demo)
+
+We provide a Docker image for the GUI demo.
+
+```bash
+docker run --runtime=nvidia --gpus=all -p <GUI-PORT>:8000 -e OPENAI_API_KEY=<OPENAI-API-KEY> -e AZURE_OPENAI_URL=<AZURE-OPENAI-URL> controlnet/naver:latest
+```
+
+The GUI will be available at `http://0.0.0.0:<GUI-PORT>`. See details below for more information.
+
 ## Installation
 
 ### Requirements
