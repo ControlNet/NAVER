@@ -41,4 +41,5 @@ class Sam(BaseModel):
     @classmethod
     def prepare(cls):
         path = get_root_folder() / "pretrained_models" / "sam"
-        N.util.download_file("https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth", str(path))
+        if not (path / "sam_vit_h_4b8939.pth").exists():
+            N.util.download_file("https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth", str(path))
