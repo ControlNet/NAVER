@@ -109,7 +109,7 @@ python -m hydra_vl4ai.download_model --base_config config/refcoco.yaml --model_c
 
 ## Inference
 
-You may need 28GB vRAM to run NAVER. Consider editing the file in `./config/model_config.yaml` to load the models in multiple GPUs.
+You may need at least 28GB vRAM to run NAVER. Consider editing the file in `./config/model_config.yaml` to load the models in multiple GPUs.
 
 ### Inference with GUI
 
