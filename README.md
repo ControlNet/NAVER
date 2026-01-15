@@ -34,7 +34,7 @@
 </div>
 
 
-**This repo is the official implementation for the paper [NAVER: A Neuro-Symbolic Compositional Automaton for Visual Grounding with Explicit Logic Reasoning](https://arxiv.org/abs/2502.00372) in ICCV 2025.**
+**This repo is the official implementation for the paper [NAVER: A Neuro-Symbolic Compositional Automaton for Visual Grounding with Explicit Logic Reasoning](https://openaccess.thecvf.com/content/ICCV2025/html/Cai_NAVER_A_Neuro-Symbolic_Compositional_Automaton_for_Visual_Grounding_with_Explicit_ICCV_2025_paper.html) in ICCV 2025.**
 
 
 ## Release
@@ -161,7 +161,9 @@ If you find this work useful for your research, please consider citing it.
 @article{cai2025naver,
   title = {NAVER: A Neuro-Symbolic Compositional Automaton for Visual Grounding with Explicit Logic Reasoning},
   author = {Cai, Zhixi and Ke, Fucai and Jahangard, Simindokht and Garcia de la Banda, Maria and Haffari, Reza and Stuckey, Peter J. and Rezatofighi, Hamid},
-  journal = {arXiv preprint arXiv:2502.00372},
+  booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
   year = {2025},
+  month = {October},
+  pages = {24078-24089}
 }
 ```
