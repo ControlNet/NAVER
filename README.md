@@ -158,12 +158,13 @@ The evaluation results will be printed in the console. Note the output from LLM 
 ## Citation
 If you find this work useful for your research, please consider citing it.
 ```bibtex
-@article{cai2025naver,
+@inproceedings{cai2025naver,
   title = {NAVER: A Neuro-Symbolic Compositional Automaton for Visual Grounding with Explicit Logic Reasoning},
   author = {Cai, Zhixi and Ke, Fucai and Jahangard, Simindokht and Garcia de la Banda, Maria and Haffari, Reza and Stuckey, Peter J. and Rezatofighi, Hamid},
   booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
   year = {2025},
   month = {October},
-  pages = {24078-24089}
+  pages = {24078--24089},
+  doi = {10.1109/ICCV51701.2025.02232}
 }
 ```
