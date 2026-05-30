@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you find this work useful for your research, please consider citing it."
 preferred-citation:
-  type: article
+  type: conference-paper
   authors:
   - family-names: "Cai"
     given-names: "Zhixi"
@@ -17,6 +17,9 @@ preferred-citation:
     given-names: "Peter J."
   - family-names: "Rezatofighi"
     given-names: "Hamid"
-  journal: "arXiv preprint arXiv:2502.00372"
+  collection-title: "Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)"
   title: "NAVER: A Neuro-Symbolic Compositional Automaton for Visual Grounding with Explicit Logic Reasoning"
+  start: 24078
+  end: 24089
+  doi: 10.1109/ICCV51701.2025.02232
   year: 2025
