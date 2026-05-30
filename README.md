@@ -46,8 +46,7 @@
 
 We're working on the following TODOs:
 - [x] GUI demo.
-- [ ] Support more LLMs.
-- [ ] Video demo & slides presentation.
+- [x] Support more LLMs.
 
 ## Docker (GUI Demo)
 
